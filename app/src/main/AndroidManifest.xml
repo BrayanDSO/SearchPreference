@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.bytehamster.preferencesearch">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
             android:allowBackup="true"
@@ -10,7 +9,9 @@
             android:supportsRtl="true">
         <activity android:name=".SimpleExample"
                   android:theme="@style/AppTheme"
-                  android:label="@string/app_name">
+                  android:label="@string/app_name"
+                  android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -18,7 +19,9 @@
         </activity>
         <activity android:name=".EnhancedExample"
                   android:theme="@style/AppThemeDark"
-                  android:label="@string/app_name_enhanced">
+                  android:label="@string/app_name_enhanced"
+                  android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -26,7 +29,8 @@
         </activity>
         <activity android:name=".NoPreferencesExample"
                   android:theme="@style/AppTheme"
-                  android:label="@string/app_name_no_preferences">
+                  android:label="@string/app_name_no_preferences"
+                  android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -34,7 +38,8 @@
         </activity>
         <activity android:name=".SearchViewExample"
                   android:theme="@style/AppTheme"
-                  android:label="@string/app_name_search_view">
+                  android:label="@string/app_name_search_view"
+                  android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
