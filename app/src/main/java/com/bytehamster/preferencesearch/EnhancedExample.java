@@ -49,7 +49,7 @@ public class EnhancedExample extends AppCompatActivity implements SearchPreferen
             addPreferencesFromResource(R.xml.preferences);
 
             searchPreference = (SearchPreference) findPreference("searchPreference");
-            SearchConfiguration config = searchPreference.getSearchConfiguration();
+            SearchConfiguration config = searchPreference.searchConfiguration;
             config.setActivity((AppCompatActivity) getActivity());
             config.setFragmentContainerViewId(android.R.id.content);
 
@@ -63,8 +63,8 @@ public class EnhancedExample extends AppCompatActivity implements SearchPreferen
         private void onSearchResultClicked(SearchPreferenceResult result) {
             if (result.getResourceFile() == R.xml.preferences) {
                 searchPreference.setVisible(false); // Do not allow to click search multiple times
-                scrollToPreference(result.getKey());
-                findPreference(result.getKey()).setTitle("RESULT: " + findPreference(result.getKey()).getTitle());
+                scrollToPreference(result.key);
+                findPreference(result.key).setTitle("RESULT: " + findPreference(result.key).getTitle());
             } else {
                 // Result was found in the other file
                 getPreferenceScreen().removeAll();

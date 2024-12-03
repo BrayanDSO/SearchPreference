@@ -36,7 +36,7 @@ public class SimpleExample extends AppCompatActivity implements SearchPreference
             addPreferencesFromResource(R.xml.preferences);
 
             SearchPreference searchPreference = (SearchPreference) findPreference("searchPreference");
-            SearchConfiguration config = searchPreference.getSearchConfiguration();
+            SearchConfiguration config = searchPreference.searchConfiguration;
             config.setActivity((AppCompatActivity) getActivity());
             config.index(R.xml.preferences);
         }

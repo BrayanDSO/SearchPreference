@@ -27,15 +27,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".NoPreferencesExample"
-                  android:theme="@style/AppTheme"
-                  android:label="@string/app_name_no_preferences"
-                  android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
         <activity android:name=".SearchViewExample"
                   android:theme="@style/AppTheme"
                   android:label="@string/app_name_search_view"
