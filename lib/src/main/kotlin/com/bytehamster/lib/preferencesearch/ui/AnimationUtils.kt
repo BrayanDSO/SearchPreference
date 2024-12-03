@@ -1,15 +1,10 @@
 package com.bytehamster.lib.preferencesearch.ui
 
-import android.R
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
-import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.view.View
 import android.view.View.OnLayoutChangeListener
 import android.view.ViewAnimationUtils
@@ -43,10 +38,10 @@ object AnimationUtils {
                 val cy = revealSettings.centerY
                 val width = revealSettings.width
                 val height = revealSettings.height
-                val duration = context.resources.getInteger(R.integer.config_longAnimTime)
+                val duration = context.resources.getInteger(android.R.integer.config_longAnimTime)
 
                 //Simply use the diagonal of the view
-                val finalRadius = sqrt((width * width + height * height).toDouble()) as Float
+                val finalRadius = sqrt((width * width + height * height).toDouble()).toFloat()
                 val anim = ViewAnimationUtils.createCircularReveal(v, cx, cy, 0f, finalRadius)
                     .setDuration(duration.toLong())
                 anim.interpolator = FastOutSlowInInterpolator()

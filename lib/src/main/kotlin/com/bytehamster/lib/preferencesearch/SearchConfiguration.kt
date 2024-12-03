@@ -1,6 +1,5 @@
 package com.bytehamster.lib.preferencesearch
 
-import android.R
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
@@ -27,7 +26,7 @@ class SearchConfiguration {
     private var fuzzySearchEnabled = true
     private var searchBarEnabled = true
     private var activity: AppCompatActivity? = null
-    private var containerResId = R.id.content
+    private var containerResId = android.R.id.content
     var revealAnimationSetting: RevealAnimationSetting? = null
         private set
     private var textClearHistory: String? = null
