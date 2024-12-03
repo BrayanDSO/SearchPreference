@@ -1,119 +1,114 @@
-package com.bytehamster.preferencesearch;
+package com.bytehamster.preferencesearch
 
+import android.os.Bundle
+import android.os.Handler
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
+import com.bytehamster.lib.preferencesearch.SearchPreference
+import com.bytehamster.lib.preferencesearch.SearchPreferenceActionView
+import com.bytehamster.lib.preferencesearch.SearchPreferenceResult
+import com.bytehamster.lib.preferencesearch.SearchPreferenceResultListener
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.Menu;
-import android.view.MenuItem;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceFragmentCompat;
-import com.bytehamster.lib.preferencesearch.SearchConfiguration;
-import com.bytehamster.lib.preferencesearch.SearchPreference;
-import com.bytehamster.lib.preferencesearch.SearchPreferenceActionView;
-import com.bytehamster.lib.preferencesearch.SearchPreferenceResult;
-import com.bytehamster.lib.preferencesearch.SearchPreferenceResultListener;
 
 /**
  * This file demonstrates how to use the library without actually displaying a PreferenceFragment
  */
-public class SearchViewExample extends AppCompatActivity implements SearchPreferenceResultListener {
-    private static final String KEY_SEARCH_QUERY = "search_query";
-    private static final String KEY_SEARCH_ENABLED = "search_enabled";
-    private SearchPreferenceActionView searchPreferenceActionView;
-    private MenuItem searchPreferenceMenuItem;
-    private String savedInstanceSearchQuery;
-    private boolean savedInstanceSearchEnabled;
-    private PrefsFragment prefsFragment;
+class SearchViewExample : AppCompatActivity(), SearchPreferenceResultListener {
+    private var searchPreferenceActionView: SearchPreferenceActionView? = null
+    private var searchPreferenceMenuItem: MenuItem? = null
+    private var savedInstanceSearchQuery: String? = null
+    private var savedInstanceSearchEnabled = false
+    private var prefsFragment: PrefsFragment? = null
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         if (savedInstanceState != null) {
-            savedInstanceSearchQuery = savedInstanceState.getString(KEY_SEARCH_QUERY);
-            savedInstanceSearchEnabled = savedInstanceState.getBoolean(KEY_SEARCH_ENABLED);
+            savedInstanceSearchQuery = savedInstanceState.getString(KEY_SEARCH_QUERY)
+            savedInstanceSearchEnabled = savedInstanceState.getBoolean(KEY_SEARCH_ENABLED)
         }
 
-        prefsFragment = new PrefsFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(android.R.id.content, prefsFragment).commit();
+        prefsFragment = PrefsFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(android.R.id.content, prefsFragment!!).commit()
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        searchPreferenceMenuItem = menu.findItem(R.id.search);
-        searchPreferenceActionView = (SearchPreferenceActionView) searchPreferenceMenuItem.getActionView();
-        SearchConfiguration searchConfiguration = searchPreferenceActionView.getSearchConfiguration();
-        searchConfiguration.index(R.xml.preferences);
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        searchPreferenceMenuItem = menu.findItem(R.id.search)
+        searchPreferenceActionView =
+            searchPreferenceMenuItem?.getActionView() as SearchPreferenceActionView?
+        val searchConfiguration = searchPreferenceActionView!!.searchConfiguration
+        searchConfiguration.index(R.xml.preferences)
 
         searchConfiguration.useAnimation(
-                findViewById(android.R.id.content).getWidth() - getSupportActionBar().getHeight()/2,
-                -getSupportActionBar().getHeight()/2,
-                findViewById(android.R.id.content).getWidth(),
-                findViewById(android.R.id.content).getHeight(),
-                getResources().getColor(R.color.colorPrimary));
+            findViewById<View>(android.R.id.content).width - supportActionBar!!.height / 2,
+            -supportActionBar!!.height / 2,
+            findViewById<View>(android.R.id.content).width,
+            findViewById<View>(android.R.id.content).height,
+            resources.getColor(R.color.colorPrimary)
+        )
 
-        searchPreferenceActionView.setActivity(this);
+        searchPreferenceActionView!!.activity = this
 
-        final MenuItem searchPreferenceMenuItem = menu.findItem(R.id.search);
-        searchPreferenceMenuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                searchPreferenceActionView.cancelSearch();
-                return true;
+        val searchPreferenceMenuItem = menu.findItem(R.id.search)
+        searchPreferenceMenuItem.setOnActionExpandListener(object :
+            MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                searchPreferenceActionView!!.cancelSearch()
+                return true
             }
 
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                return true;
+            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                return true
             }
-        });
+        })
 
         if (savedInstanceSearchEnabled) {
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
-                    // If we do not use a handler here, it will not be possible
-                    // to use the menuItem after dismissing the searchView
-                    searchPreferenceMenuItem.expandActionView();
-                    searchPreferenceActionView.setQuery(savedInstanceSearchQuery, false);
-                }
-            });
+            Handler().post { // If we do not use a handler here, it will not be possible
+                // to use the menuItem after dismissing the searchView
+                searchPreferenceMenuItem.expandActionView()
+                searchPreferenceActionView!!.setQuery(savedInstanceSearchQuery, false)
+            }
         }
-        return true;
+        return true
     }
 
-    @Override
-    public void onSearchResultClicked(@NonNull final SearchPreferenceResult result) {
-        searchPreferenceActionView.cancelSearch();
-        searchPreferenceMenuItem.collapseActionView();
-        result.highlight(prefsFragment);
+    override fun onSearchResultClicked(result: SearchPreferenceResult) {
+        searchPreferenceActionView!!.cancelSearch()
+        searchPreferenceMenuItem!!.collapseActionView()
+        result.highlight(prefsFragment!!)
     }
 
-    @Override
-    public void onBackPressed() {
-        if (!searchPreferenceActionView.cancelSearch()) {
-            super.onBackPressed();
+    override fun onBackPressed() {
+        if (!searchPreferenceActionView!!.cancelSearch()) {
+            super.onBackPressed()
         }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putString(KEY_SEARCH_QUERY, searchPreferenceActionView.getQuery().toString());
-        outState.putBoolean(KEY_SEARCH_ENABLED, !searchPreferenceActionView.isIconified());
-        searchPreferenceActionView.cancelSearch();
-        super.onSaveInstanceState(outState);
+    public override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(KEY_SEARCH_QUERY, searchPreferenceActionView!!.query.toString())
+        outState.putBoolean(KEY_SEARCH_ENABLED, !searchPreferenceActionView!!.isIconified)
+        searchPreferenceActionView!!.cancelSearch()
+        super.onSaveInstanceState(outState)
     }
 
-    public static class PrefsFragment extends PreferenceFragmentCompat {
-        @Override
-        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-            addPreferencesFromResource(R.xml.preferences);
+    class PrefsFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            addPreferencesFromResource(R.xml.preferences)
 
-            SearchPreference searchPreference = (SearchPreference) findPreference("searchPreference");
-            searchPreference.setVisible(false);
+            val searchPreference =
+                findPreference<Preference>("searchPreference") as SearchPreference?
+            searchPreference!!.isVisible = false
         }
+    }
+
+    companion object {
+        private const val KEY_SEARCH_QUERY = "search_query"
+        private const val KEY_SEARCH_ENABLED = "search_enabled"
     }
 }
