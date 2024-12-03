@@ -103,7 +103,6 @@ class PreferenceParser {
 
     private String getAttribute(XmlPullParser xpp, @Nullable String namespace, @NonNull String attribute) {
         for (int i = 0; i < xpp.getAttributeCount(); i++) {
-            Log.d("ns", xpp.getAttributeNamespace(i));
             if (attribute.equals(xpp.getAttributeName(i)) &&
                     (namespace == null || namespace.equals(xpp.getAttributeNamespace(i)))) {
                 return xpp.getAttributeValue(i);
@@ -131,8 +130,6 @@ class PreferenceParser {
         result.key = readString(getAttribute(xpp, "key"));
         result.entries = readStringArray(getAttribute(xpp, "entries"));
         result.keywords = readString(getAttribute(xpp, NS_SEARCH, "keywords"));
-
-        Log.d("PreferenceParser", "Found: " + xpp.getName() + "/" + result);
         return result;
     }
 
