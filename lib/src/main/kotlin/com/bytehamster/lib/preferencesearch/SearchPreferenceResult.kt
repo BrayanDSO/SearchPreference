@@ -22,12 +22,7 @@ class SearchPreferenceResult internal constructor(
      * Returns the file in which the result was found
      * @return The file in which the result was found
      */
-    val resourceFile: Int,
-    /**
-     * Returns the screen in which the result was found
-     * @return The screen in which the result was found
-     */
-    val screen: String
+    val resourceFile: Int
 ) {
     /**
      * Highlight the preference that was found

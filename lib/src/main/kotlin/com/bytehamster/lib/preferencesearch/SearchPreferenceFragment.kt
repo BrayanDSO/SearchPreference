@@ -267,11 +267,7 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
                 val callback = activity as SearchPreferenceResultListener?
                 val r = results!![position]
                 addHistoryEntry(r.title!!)
-                var screen: String? = null
-                if (!r.keyBreadcrumbs.isEmpty()) {
-                    screen = r.keyBreadcrumbs[r.keyBreadcrumbs.size - 1]
-                }
-                val result = SearchPreferenceResult(r.key!!, r.resId, screen!!)
+                val result = SearchPreferenceResult(r.key!!, r.resId)
                 callback!!.onSearchResultClicked(result)
             } catch (e: ClassCastException) {
                 throw ClassCastException(activity.toString() + " must implement SearchPreferenceResultListener")
