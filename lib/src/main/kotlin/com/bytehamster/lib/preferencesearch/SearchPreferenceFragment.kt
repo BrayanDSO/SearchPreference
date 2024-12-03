@@ -257,9 +257,7 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
             val text: CharSequence = (item as HistoryItem).term
             viewHolder!!.searchView.setText(text)
             viewHolder!!.searchView.setSelection(text.length)
-            if (historyClickListener != null) {
-                historyClickListener!!.invoke(text.toString())
-            }
+            historyClickListener?.invoke(text.toString())
         } else {
             hideKeyboard()
 
