@@ -57,8 +57,8 @@ class SearchPreferenceResult internal constructor(
                             android.R.attr.textColorPrimary
                         )
                         holder.itemView.setBackgroundColor(color and 0xffffff or 0x33000000)
-                        Handler().postDelayed(
-                            { holder.itemView.setBackgroundDrawable(oldBackground) },
+                        holder.itemView.postDelayed(
+                            { holder.itemView.background = oldBackground },
                             1000
                         )
                         return@postDelayed

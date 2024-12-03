@@ -64,7 +64,7 @@ internal class SearchPreferenceAdapter :
 
         h.root.setOnClickListener { v: View? ->
             if (onItemClickListener != null) {
-                onItemClickListener!!.onItemClicked(listItem, h.adapterPosition)
+                onItemClickListener!!.onItemClicked(listItem, h.absoluteAdapterPosition)
             }
         }
     }

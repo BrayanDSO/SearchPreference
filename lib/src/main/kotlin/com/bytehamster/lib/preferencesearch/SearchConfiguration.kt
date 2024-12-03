@@ -1,5 +1,6 @@
 package com.bytehamster.lib.preferencesearch
 
+import android.os.Binder
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
@@ -9,6 +10,7 @@ import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.annotation.XmlRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.BundleCompat
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import com.bytehamster.lib.preferencesearch.Breadcrumb.concat
@@ -353,12 +355,10 @@ class SearchConfiguration {
         @JvmStatic
         fun fromBundle(bundle: Bundle): SearchConfiguration {
             val config = SearchConfiguration()
-            config.files = bundle.getParcelableArrayList(ARGUMENT_INDEX_FILES)
-            config.preferencesToIndex = bundle.getParcelableArrayList(
-                ARGUMENT_INDEX_INDIVIDUAL_PREFERENCES
-            )
+            config.files = BundleCompat.getParcelableArrayList(bundle, ARGUMENT_INDEX_FILES, SearchIndexItem::class.java)
+            config.preferencesToIndex = BundleCompat.getParcelableArrayList(bundle, ARGUMENT_INDEX_INDIVIDUAL_PREFERENCES, PreferenceItem::class.java)
             config.historyEnabled = bundle.getBoolean(ARGUMENT_HISTORY_ENABLED)
-            config.revealAnimationSetting = bundle.getParcelable(ARGUMENT_REVEAL_ANIMATION_SETTING)
+            config.revealAnimationSetting = BundleCompat.getParcelable(bundle, ARGUMENT_REVEAL_ANIMATION_SETTING, RevealAnimationSetting::class.java)
             config.fuzzySearchEnabled = bundle.getBoolean(ARGUMENT_FUZZY_ENABLED)
             config.breadcrumbsEnabled = bundle.getBoolean(ARGUMENT_BREADCRUMBS_ENABLED)
             config.searchBarEnabled = bundle.getBoolean(ARGUMENT_SEARCH_BAR_ENABLED)
