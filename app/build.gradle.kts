@@ -10,8 +10,8 @@ android {
 
     defaultConfig {
         applicationId = "com.bytehamster.preferencesearch"
-        minSdk = 24
-        targetSdk = 34
+        minSdk = 21
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
