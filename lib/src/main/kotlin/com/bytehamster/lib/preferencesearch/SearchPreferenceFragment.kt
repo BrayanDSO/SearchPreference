@@ -31,7 +31,7 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
     private var history: MutableList<HistoryItem>? = null
     private var prefs: SharedPreferences? = null
     private var viewHolder: SearchViewHolder? = null
-    private var searchConfiguration: SearchConfiguration? = null
+    private lateinit var searchConfiguration: SearchConfiguration
     private var adapter: SearchPreferenceAdapter? = null
     private var historyClickListener: ((String) -> Unit)? = null
     private var searchTermPreset: CharSequence? = null
@@ -43,11 +43,11 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
         searcher = PreferenceParser(requireContext())
 
         searchConfiguration = fromBundle(requireArguments())
-        val files = searchConfiguration!!.files
+        val files = searchConfiguration.files
         for (file in files!!) {
             searcher!!.addResourceFile(file)
         }
-        searcher!!.addPreferenceItems(searchConfiguration!!.preferencesToIndex!!)
+        searcher!!.addPreferenceItems(searchConfiguration.preferencesToIndex!!)
         loadHistory()
     }
 
@@ -65,14 +65,14 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
                 "",
             )
         }
-        if (searchConfiguration!!.isHistoryEnabled()) {
+        if (searchConfiguration.isHistoryEnabled()) {
             viewHolder!!.moreButton.visibility = View.VISIBLE
         }
-        if (searchConfiguration!!.getTextHint() != null) {
-            viewHolder!!.searchView.hint = searchConfiguration!!.getTextHint()
+        if (searchConfiguration.getTextHint() != null) {
+            viewHolder!!.searchView.hint = searchConfiguration.getTextHint()
         }
-        if (searchConfiguration!!.getTextNoResults() != null) {
-            viewHolder!!.noResults.text = searchConfiguration!!.getTextNoResults()
+        if (searchConfiguration.getTextNoResults() != null) {
+            viewHolder!!.noResults.text = searchConfiguration.getTextNoResults()
         }
         viewHolder!!.moreButton.setOnClickListener { v: View? ->
             val popup =
@@ -87,9 +87,9 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
                 }
                 true
             }
-            if (searchConfiguration!!.getTextClearHistory() != null) {
+            if (searchConfiguration.getTextClearHistory() != null) {
                 popup.menu.findItem(R.id.clear_history)
-                    .setTitle(searchConfiguration!!.getTextClearHistory())
+                    .setTitle(searchConfiguration.getTextClearHistory())
             }
             popup.show()
         }
@@ -105,7 +105,7 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
 
         viewHolder!!.searchView.addTextChangedListener(textWatcher)
 
-        if (!searchConfiguration!!.isSearchBarEnabled()) {
+        if (!searchConfiguration.isSearchBarEnabled()) {
             viewHolder!!.cardView.visibility = View.GONE
         }
 
@@ -113,7 +113,7 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
             viewHolder!!.searchView.setText(searchTermPreset)
         }
 
-        val anim = searchConfiguration!!.revealAnimationSetting
+        val anim = searchConfiguration.revealAnimationSetting
         if (anim != null) {
             AnimationUtils.registerCircularRevealAnimation(
                 requireContext(),
@@ -127,7 +127,7 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
 
     private fun loadHistory() {
         history = mutableListOf()
-        if (!searchConfiguration!!.isHistoryEnabled()) {
+        if (!searchConfiguration.isHistoryEnabled()) {
             return
         }
 
@@ -152,8 +152,8 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
      * @return the preference key for the history size
      */
     private fun historySizeKey(): String {
-        return if (searchConfiguration!!.getHistoryId() != null) {
-            searchConfiguration!!.getHistoryId() + "_history_size"
+        return if (searchConfiguration.getHistoryId() != null) {
+            searchConfiguration.getHistoryId() + "_history_size"
         } else {
             "history_size"
         }
@@ -164,8 +164,8 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
      * @return the preference key for the history entry
      */
     private fun historyEntryKey(i: Int): String {
-        return if (searchConfiguration!!.getHistoryId() != null) {
-            searchConfiguration!!.getHistoryId() + "_history_" + i
+        return if (searchConfiguration.getHistoryId() != null) {
+            searchConfiguration.getHistoryId() + "_history_" + i
         } else {
             "history_$i"
         }
@@ -194,7 +194,7 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
         super.onResume()
         updateSearchResults(viewHolder!!.searchView.text.toString())
 
-        if (searchConfiguration!!.isSearchBarEnabled()) {
+        if (searchConfiguration.isSearchBarEnabled()) {
             showKeyboard()
         }
     }
@@ -237,7 +237,7 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
             return
         }
 
-        results = searcher!!.searchFor(keyword, searchConfiguration!!.isFuzzySearchEnabled())
+        results = searcher!!.searchFor(keyword, searchConfiguration.isFuzzySearchEnabled())
         adapter!!.setContent(results!!.toList())
 
         setEmptyViewShown(results!!.isEmpty())
