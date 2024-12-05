@@ -1,3 +1,7 @@
+plugins {
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.2"
+}
+
 buildscript {
     repositories {
         google()
@@ -13,4 +17,8 @@ allprojects {
         google()
         mavenCentral()
     }
+}
+
+subprojects {
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
 }

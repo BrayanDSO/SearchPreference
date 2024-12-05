@@ -4,7 +4,6 @@ import android.content.Context
 import android.text.TextUtils
 import com.bytehamster.lib.preferencesearch.Breadcrumb.concat
 import com.bytehamster.lib.preferencesearch.SearchConfiguration.SearchIndexItem
-import com.bytehamster.lib.preferencesearch.SearchPreference
 import org.xmlpull.v1.XmlPullParser
 import java.util.Arrays
 import java.util.Collections
@@ -38,10 +37,11 @@ internal class PreferenceParser(private val context: Context) {
                     val result = parseSearchResult(xpp)
                     result.resId = item.resId
 
-                    if (!BLACKLIST.contains(xpp.name)
-                        && result.hasData()
-                        && "true" != getAttribute(xpp, NS_SEARCH, "ignore") && !bannedKeys.contains(
-                            result.key
+                    if (!BLACKLIST.contains(xpp.name) &&
+                        result.hasData() &&
+                        "true" != getAttribute(xpp, NS_SEARCH, "ignore") &&
+                        !bannedKeys.contains(
+                            result.key,
                         )
                     ) {
                         result.breadcrumbs = joinBreadcrumbs(breadcrumbs)
@@ -89,7 +89,11 @@ internal class PreferenceParser(private val context: Context) {
         return result
     }
 
-    private fun getAttribute(xpp: XmlPullParser, namespace: String?, attribute: String): String? {
+    private fun getAttribute(
+        xpp: XmlPullParser,
+        namespace: String?,
+        attribute: String,
+    ): String? {
         for (i in 0 until xpp.attributeCount) {
             if (attribute == xpp.getAttributeName(i) &&
                 (namespace == null || namespace == xpp.getAttributeNamespace(i))
@@ -100,7 +104,10 @@ internal class PreferenceParser(private val context: Context) {
         return null
     }
 
-    private fun getAttribute(xpp: XmlPullParser, attribute: String): String? {
+    private fun getAttribute(
+        xpp: XmlPullParser,
+        attribute: String,
+    ): String? {
         return if (hasAttribute(xpp, NS_SEARCH, attribute)) {
             getAttribute(xpp, NS_SEARCH, attribute)
         } else {
@@ -108,7 +115,11 @@ internal class PreferenceParser(private val context: Context) {
         }
     }
 
-    private fun hasAttribute(xpp: XmlPullParser, namespace: String?, attribute: String): Boolean {
+    private fun hasAttribute(
+        xpp: XmlPullParser,
+        namespace: String?,
+        attribute: String,
+    ): Boolean {
         return getAttribute(xpp, namespace, attribute) != null
     }
 
@@ -153,27 +164,31 @@ internal class PreferenceParser(private val context: Context) {
         return s
     }
 
-    fun searchFor(keyword: String?, fuzzy: Boolean): List<PreferenceItem> {
+    fun searchFor(
+        keyword: String?,
+        fuzzy: Boolean,
+    ): List<PreferenceItem> {
         if (TextUtils.isEmpty(keyword)) {
             return ArrayList()
         }
         val results = ArrayList<PreferenceItem>()
 
         for (item in allEntries) {
-            if ((fuzzy && item.matchesFuzzy(keyword!!))
-                || (!fuzzy && item.matches(keyword!!))
+            if ((fuzzy && item.matchesFuzzy(keyword!!)) ||
+                (!fuzzy && item.matches(keyword!!))
             ) {
                 results.add(item)
             }
         }
 
         Collections.sort(
-            results
+            results,
         ) { i1, i2 ->
             floatCompare(
-                i2.getScore(keyword!!), i1.getScore(
-                    keyword
-                )
+                i2.getScore(keyword!!),
+                i1.getScore(
+                    keyword,
+                ),
             )
         }
 
@@ -189,13 +204,18 @@ internal class PreferenceParser(private val context: Context) {
         private const val NS_ANDROID = "http://schemas.android.com/apk/res/android"
         private const val NS_SEARCH =
             "http://schemas.android.com/apk/com.bytehamster.lib.preferencesearch"
-        private val BLACKLIST: List<String> = Arrays.asList(
-            SearchPreference::class.java.name, "PreferenceCategory"
-        )
+        private val BLACKLIST: List<String> =
+            Arrays.asList(
+                SearchPreference::class.java.name,
+                "PreferenceCategory",
+            )
         private val CONTAINERS: List<String> =
             mutableListOf("PreferenceCategory", "PreferenceScreen")
 
-        private fun floatCompare(x: Float, y: Float): Int {
+        private fun floatCompare(
+            x: Float,
+            y: Float,
+        ): Int {
             return if ((x < y)) -1 else (if ((x == y)) 0 else 1)
         }
     }

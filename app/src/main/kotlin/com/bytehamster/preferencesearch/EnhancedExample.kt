@@ -37,7 +37,10 @@ class EnhancedExample : AppCompatActivity(), SearchPreferenceResultListener {
     class PrefsFragment : PreferenceFragmentCompat(), SearchPreferenceResultListener {
         private var searchPreference: SearchPreference? = null
 
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        override fun onCreatePreferences(
+            savedInstanceState: Bundle?,
+            rootKey: String?,
+        ) {
             addPreferencesFromResource(R.xml.preferences)
 
             searchPreference = findPreference<Preference>("searchPreference") as SearchPreference?
@@ -62,8 +65,9 @@ class EnhancedExample : AppCompatActivity(), SearchPreferenceResultListener {
                 searchPreference!!.isVisible = false // Do not allow to click search multiple times
                 scrollToPreference(result.key)
                 findPreference<Preference>(result.key)!!.title =
-                    "RESULT: " + findPreference<Preference>(
-                        result.key
+                    "RESULT: " +
+                    findPreference<Preference>(
+                        result.key,
                     )!!.title
             } else {
                 // Result was found in the other file

@@ -11,20 +11,28 @@ import java.util.Locale
 
 class PreferenceItem : ListItem, Parcelable {
     override val type: Int = TYPE
+
     @JvmField
     var title: String? = null
+
     @JvmField
     var summary: String? = null
+
     @JvmField
     var key: String? = null
+
     @JvmField
     var entries: String? = null
+
     @JvmField
     var breadcrumbs: String? = null
+
     @JvmField
     var keywords: String? = null
+
     @JvmField
     var keyBreadcrumbs: ArrayList<String> = ArrayList()
+
     @JvmField
     var resId: Int = 0
 
@@ -118,7 +126,9 @@ class PreferenceItem : ListItem, Parcelable {
         return this
     }
 
-    fun withResId(@XmlRes resId: Int): PreferenceItem {
+    fun withResId(
+        @XmlRes resId: Int,
+    ): PreferenceItem {
         this.resId = resId
         return this
     }
@@ -140,7 +150,10 @@ class PreferenceItem : ListItem, Parcelable {
         return 0
     }
 
-    override fun writeToParcel(parcel: Parcel, i: Int) {
+    override fun writeToParcel(
+        parcel: Parcel,
+        i: Int,
+    ) {
         parcel.writeString(title)
         parcel.writeString(summary)
         parcel.writeString(key)
@@ -154,14 +167,15 @@ class PreferenceItem : ListItem, Parcelable {
         private val fuzzyScore = FuzzyScore(Locale.getDefault())
 
         @JvmField
-        val CREATOR: Creator<PreferenceItem> = object : Creator<PreferenceItem> {
-            override fun createFromParcel(`in`: Parcel): PreferenceItem {
-                return PreferenceItem(`in`)
-            }
+        val CREATOR: Creator<PreferenceItem> =
+            object : Creator<PreferenceItem> {
+                override fun createFromParcel(`in`: Parcel): PreferenceItem {
+                    return PreferenceItem(`in`)
+                }
 
-            override fun newArray(size: Int): Array<PreferenceItem?> {
-                return arrayOfNulls(size)
+                override fun newArray(size: Int): Array<PreferenceItem?> {
+                    return arrayOfNulls(size)
+                }
             }
-        }
     }
 }

@@ -10,7 +10,10 @@ internal object Breadcrumb {
      * @return Both breadcrumbs joined
      */
     @JvmStatic
-    fun concat(s1: String?, s2: String): String {
+    fun concat(
+        s1: String?,
+        s2: String,
+    ): String {
         if (TextUtils.isEmpty(s1)) {
             return s2
         }

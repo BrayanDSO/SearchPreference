@@ -36,7 +36,10 @@ class RevealAnimationSetting : Parcelable {
         return 0
     }
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {
+    override fun writeToParcel(
+        dest: Parcel,
+        flags: Int,
+    ) {
         dest.writeInt(centerX)
         dest.writeInt(centerY)
         dest.writeInt(width)
@@ -46,14 +49,15 @@ class RevealAnimationSetting : Parcelable {
 
     companion object {
         @JvmField
-        val CREATOR: Creator<RevealAnimationSetting> = object : Creator<RevealAnimationSetting> {
-            override fun createFromParcel(`in`: Parcel): RevealAnimationSetting {
-                return RevealAnimationSetting(`in`)
-            }
+        val CREATOR: Creator<RevealAnimationSetting> =
+            object : Creator<RevealAnimationSetting> {
+                override fun createFromParcel(`in`: Parcel): RevealAnimationSetting {
+                    return RevealAnimationSetting(`in`)
+                }
 
-            override fun newArray(size: Int): Array<RevealAnimationSetting?> {
-                return arrayOfNulls(size)
+                override fun newArray(size: Int): Array<RevealAnimationSetting?> {
+                    return arrayOfNulls(size)
+                }
             }
-        }
     }
 }

@@ -44,10 +44,11 @@ class SearchConfiguration {
     }
 
     fun onSearch() {
-        val fragment = SearchPreferenceFragment().apply {
-            arguments = toBundle()
-            onSearchResultClickedListener?.let { this.setOnSearchResultClickedListener(it) }
-        }
+        val fragment =
+            SearchPreferenceFragment().apply {
+                arguments = toBundle()
+                onSearchResultClickedListener?.let { this.setOnSearchResultClickedListener(it) }
+            }
         onSearchListener?.invoke(fragment)
     }
 
@@ -55,7 +56,7 @@ class SearchConfiguration {
         val arguments = Bundle()
         arguments.putParcelableArrayList(
             ARGUMENT_INDEX_FILES,
-            files
+            files,
         )
         arguments.putParcelableArrayList(ARGUMENT_INDEX_INDIVIDUAL_PREFERENCES, preferencesToIndex)
         arguments.putBoolean(ARGUMENT_HISTORY_ENABLED, historyEnabled)
@@ -127,7 +128,7 @@ class SearchConfiguration {
         centerY: Int,
         width: Int,
         height: Int,
-        @ColorInt colorAccent: Int
+        @ColorInt colorAccent: Int,
     ) {
         revealAnimationSetting =
             RevealAnimationSetting(centerX, centerY, width, height, colorAccent)
@@ -137,7 +138,9 @@ class SearchConfiguration {
      * Adds a new file to the index
      * @param resId The preference file to index
      */
-    fun index(@XmlRes resId: Int): SearchIndexItem {
+    fun index(
+        @XmlRes resId: Int,
+    ): SearchIndexItem {
         val item = SearchIndexItem(resId, this)
         files!!.add(item)
         return item
@@ -250,7 +253,10 @@ class SearchConfiguration {
          * Includes the given R.xml resource in the index
          * @param resId The resource to index
          */
-        constructor(@XmlRes resId: Int, searchConfiguration: SearchConfiguration) {
+        constructor(
+            @XmlRes resId: Int,
+            searchConfiguration: SearchConfiguration,
+        ) {
             this.resId = resId
             this.searchConfiguration = searchConfiguration
         }
@@ -279,7 +285,10 @@ class SearchConfiguration {
             this.searchConfiguration = null
         }
 
-        override fun writeToParcel(dest: Parcel, flags: Int) {
+        override fun writeToParcel(
+            dest: Parcel,
+            flags: Int,
+        ) {
             dest.writeString(this.breadcrumb)
             dest.writeInt(this.resId)
         }
@@ -290,15 +299,16 @@ class SearchConfiguration {
 
         companion object {
             @JvmField
-            val CREATOR: Creator<SearchIndexItem> = object : Creator<SearchIndexItem> {
-                override fun createFromParcel(`in`: Parcel): SearchIndexItem {
-                    return SearchIndexItem(`in`)
-                }
+            val CREATOR: Creator<SearchIndexItem> =
+                object : Creator<SearchIndexItem> {
+                    override fun createFromParcel(`in`: Parcel): SearchIndexItem {
+                        return SearchIndexItem(`in`)
+                    }
 
-                override fun newArray(size: Int): Array<SearchIndexItem?> {
-                    return arrayOfNulls(size)
+                    override fun newArray(size: Int): Array<SearchIndexItem?> {
+                        return arrayOfNulls(size)
+                    }
                 }
-            }
         }
     }
 
@@ -319,9 +329,15 @@ class SearchConfiguration {
         fun fromBundle(bundle: Bundle): SearchConfiguration {
             val config = SearchConfiguration()
             config.files = BundleCompat.getParcelableArrayList(bundle, ARGUMENT_INDEX_FILES, SearchIndexItem::class.java)
-            config.preferencesToIndex = BundleCompat.getParcelableArrayList(bundle, ARGUMENT_INDEX_INDIVIDUAL_PREFERENCES, PreferenceItem::class.java)
+            config.preferencesToIndex =
+                BundleCompat.getParcelableArrayList(
+                    bundle, ARGUMENT_INDEX_INDIVIDUAL_PREFERENCES, PreferenceItem::class.java,
+                )
             config.historyEnabled = bundle.getBoolean(ARGUMENT_HISTORY_ENABLED)
-            config.revealAnimationSetting = BundleCompat.getParcelable(bundle, ARGUMENT_REVEAL_ANIMATION_SETTING, RevealAnimationSetting::class.java)
+            config.revealAnimationSetting =
+                BundleCompat.getParcelable(
+                    bundle, ARGUMENT_REVEAL_ANIMATION_SETTING, RevealAnimationSetting::class.java,
+                )
             config.fuzzySearchEnabled = bundle.getBoolean(ARGUMENT_FUZZY_ENABLED)
             config.breadcrumbsEnabled = bundle.getBoolean(ARGUMENT_BREADCRUMBS_ENABLED)
             config.searchBarEnabled = bundle.getBoolean(ARGUMENT_SEARCH_BAR_ENABLED)

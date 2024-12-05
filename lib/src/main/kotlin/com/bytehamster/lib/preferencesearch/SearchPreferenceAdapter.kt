@@ -13,28 +13,37 @@ internal class SearchPreferenceAdapter :
     private var searchConfiguration: SearchConfiguration? = null
     private var onItemClickListener: SearchClickListener? = null
 
-
     init {
         dataset = ArrayList()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder {
         return if (viewType == PreferenceItem.TYPE) {
             PreferenceViewHolder(
                 LayoutInflater.from(parent.context).inflate(
-                    R.layout.searchpreference_list_item_result, parent, false
-                )
+                    R.layout.searchpreference_list_item_result,
+                    parent,
+                    false,
+                ),
             )
         } else {
             HistoryViewHolder(
                 LayoutInflater.from(parent.context).inflate(
-                    R.layout.searchpreference_list_item_history, parent, false
-                )
+                    R.layout.searchpreference_list_item_history,
+                    parent,
+                    false,
+                ),
             )
         }
     }
 
-    override fun onBindViewHolder(h: ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        h: ViewHolder,
+        position: Int,
+    ) {
         val listItem = dataset[position]
         if (getItemViewType(position) == HistoryItem.TYPE) {
             val holder = h as HistoryViewHolder
@@ -91,11 +100,14 @@ internal class SearchPreferenceAdapter :
     }
 
     internal interface SearchClickListener {
-        fun onItemClicked(item: ListItem?, position: Int)
+        fun onItemClicked(
+            item: ListItem?,
+            position: Int,
+        )
     }
 
     internal open class ViewHolder(var root: View) : RecyclerView.ViewHolder(
-        root
+        root,
     )
 
     internal class HistoryViewHolder(v: View) : ViewHolder(v) {

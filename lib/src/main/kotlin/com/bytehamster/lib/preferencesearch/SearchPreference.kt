@@ -21,7 +21,7 @@ class SearchPreference : Preference, View.OnClickListener {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
-        defStyleAttr
+        defStyleAttr,
     ) {
         layoutResource = R.layout.searchpreference_preference
         parseAttrs(attrs)

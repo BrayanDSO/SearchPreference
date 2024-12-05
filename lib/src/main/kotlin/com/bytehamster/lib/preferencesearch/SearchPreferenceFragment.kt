@@ -55,14 +55,14 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val rootView = inflater.inflate(R.layout.searchpreference_fragment, container, false)
         viewHolder = SearchViewHolder(rootView)
 
         viewHolder!!.clearButton.setOnClickListener { view: View? ->
             viewHolder!!.searchView.setText(
-                ""
+                "",
             )
         }
         if (searchConfiguration!!.isHistoryEnabled()) {
@@ -75,9 +75,11 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
             viewHolder!!.noResults.text = searchConfiguration!!.getTextNoResults()
         }
         viewHolder!!.moreButton.setOnClickListener { v: View? ->
-            val popup = PopupMenu(
-                requireContext(), viewHolder!!.moreButton
-            )
+            val popup =
+                PopupMenu(
+                    requireContext(),
+                    viewHolder!!.moreButton,
+                )
             popup.menuInflater.inflate(R.menu.searchpreference_more, popup.menu)
             popup.setOnMenuItemClickListener { item: MenuItem ->
                 if (item.itemId == R.id.clear_history) {
@@ -92,9 +94,10 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
             popup.show()
         }
 
-        viewHolder!!.recyclerView.layoutManager = LinearLayoutManager(
-            context
-        )
+        viewHolder!!.recyclerView.layoutManager =
+            LinearLayoutManager(
+                context,
+            )
         adapter = SearchPreferenceAdapter()
         adapter!!.setSearchConfiguration(searchConfiguration)
         adapter!!.setOnItemClickListener(this)
@@ -113,7 +116,9 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
         val anim = searchConfiguration!!.revealAnimationSetting
         if (anim != null) {
             AnimationUtils.registerCircularRevealAnimation(
-                requireContext(), rootView, anim
+                requireContext(),
+                rootView,
+                anim,
             )
         }
         rootView.setOnTouchListener { v: View?, event: MotionEvent? -> true }
@@ -201,7 +206,7 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
                 requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(
                 viewHolder!!.searchView,
-                InputMethodManager.SHOW_IMPLICIT
+                InputMethodManager.SHOW_IMPLICIT,
             )
         }
     }
@@ -256,8 +261,10 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
         setEmptyViewShown(history!!.isEmpty())
     }
 
-
-    override fun onItemClicked(item: ListItem?, position: Int) {
+    override fun onItemClicked(
+        item: ListItem?,
+        position: Int,
+    ) {
         if (item?.type == HistoryItem.TYPE) {
             val text: CharSequence = (item as HistoryItem).term
             viewHolder!!.searchView.setText(text)
@@ -272,21 +279,36 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
         }
     }
 
-    private val textWatcher: TextWatcher = object : TextWatcher {
-        override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-        }
+    private val textWatcher: TextWatcher =
+        object : TextWatcher {
+            override fun beforeTextChanged(
+                charSequence: CharSequence,
+                i: Int,
+                i1: Int,
+                i2: Int,
+            ) {
+            }
 
-        override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-        }
+            override fun onTextChanged(
+                charSequence: CharSequence,
+                i: Int,
+                i1: Int,
+                i2: Int,
+            ) {
+            }
 
-        override fun afterTextChanged(editable: Editable) {
-            updateSearchResults(editable.toString())
-            viewHolder!!.clearButton.visibility =
-                if (editable.toString()
-                        .isEmpty()
-                ) View.GONE else View.VISIBLE
+            override fun afterTextChanged(editable: Editable) {
+                updateSearchResults(editable.toString())
+                viewHolder!!.clearButton.visibility =
+                    if (editable.toString()
+                            .isEmpty()
+                    ) {
+                        View.GONE
+                    } else {
+                        View.VISIBLE
+                    }
+            }
         }
-    }
 
     fun setHistoryClickListener(historyClickListener: (String) -> Unit) {
         this.historyClickListener = historyClickListener

@@ -17,8 +17,8 @@ android {
     buildTypes {
         release {
             proguardFiles(
-                    getDefaultProguardFile("proguard-android.txt"),
-                    "proguard-rules.txt"
+                getDefaultProguardFile("proguard-android.txt"),
+                "proguard-rules.txt",
             )
         }
     }
@@ -40,4 +40,21 @@ dependencies {
     implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("org.apache.commons:commons-text:1.12.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
+}
+
+// Install Git pre-commit hook
+tasks.register<Copy>("installGitHook") {
+    from(file("${rootProject.rootDir}/pre-commit"))
+    into(file("${rootProject.rootDir}/.git/hooks"))
+    filePermissions {
+        user {
+            read = true
+            write = true
+            execute = true
+        }
+    }
+}
+
+tasks.named("preBuild") {
+    dependsOn("installGitHook")
 }
