@@ -3,6 +3,7 @@ package com.bytehamster.preferencesearch
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.bytehamster.lib.preferencesearch.SearchPreference
@@ -33,17 +34,21 @@ class EnhancedExample : AppCompatActivity(), SearchPreferenceResultListener {
         Handler().post { prefsFragment!!.onSearchResultClicked(result) }
     }
 
-    class PrefsFragment : PreferenceFragmentCompat() {
-        var searchPreference: SearchPreference? = null
+    class PrefsFragment : PreferenceFragmentCompat(), SearchPreferenceResultListener {
+        private var searchPreference: SearchPreference? = null
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             addPreferencesFromResource(R.xml.preferences)
 
             searchPreference = findPreference<Preference>("searchPreference") as SearchPreference?
             val config = searchPreference!!.searchConfiguration
-            config.setActivity((activity as AppCompatActivity?)!!)
-            config.setFragmentContainerViewId(android.R.id.content)
-
+            config.setOnSearchListener { searchPreferenceFragment ->
+                parentFragmentManager.commit {
+                    replace(android.R.id.content, searchPreferenceFragment)
+                    addToBackStack(null)
+                }
+            }
+            config.setOnSearchResultClickedListener(this)
             config.index(R.xml.preferences).addBreadcrumb("Main file")
             config.index(R.xml.preferences2).addBreadcrumb("Second file")
             config.setBreadcrumbsEnabled(true)
@@ -51,7 +56,8 @@ class EnhancedExample : AppCompatActivity(), SearchPreferenceResultListener {
             config.setFuzzySearchEnabled(true)
         }
 
-        fun onSearchResultClicked(result: SearchPreferenceResult) {
+        override fun onSearchResultClicked(result: SearchPreferenceResult) {
+            parentFragmentManager.popBackStack()
             if (result.resourceFile == R.xml.preferences) {
                 searchPreference!!.isVisible = false // Do not allow to click search multiple times
                 scrollToPreference(result.key)

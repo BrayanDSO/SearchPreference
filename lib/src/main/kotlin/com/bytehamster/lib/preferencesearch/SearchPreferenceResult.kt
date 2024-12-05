@@ -7,6 +7,8 @@ import android.util.Log
 import android.util.TypedValue
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.commit
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceGroup.PreferencePositionCallback
@@ -33,19 +35,15 @@ class SearchPreferenceResult internal constructor(
     }
 
     private fun doHighlight(prefsFragment: PreferenceFragmentCompat) {
-        val prefResult = prefsFragment.findPreference<Preference>(
-            key
-        )
-
+        val prefResult = prefsFragment.findPreference<Preference>(key)
         if (prefResult == null) {
             Log.e("doHighlight", "Preference not found on given screen")
             return
         }
-        val recyclerView = prefsFragment.listView
+        val recyclerView = prefsFragment.listView ?: return
         val adapter = recyclerView.adapter
         if (adapter is PreferencePositionCallback) {
-            val callback = adapter as PreferencePositionCallback
-            val position = callback.getPreferenceAdapterPosition(prefResult)
+            val position = adapter.getPreferenceAdapterPosition(prefResult)
             if (position != RecyclerView.NO_POSITION) {
                 recyclerView.scrollToPosition(position)
                 recyclerView.postDelayed({
@@ -102,14 +100,5 @@ class SearchPreferenceResult internal constructor(
         val color = arr.getColor(0, -0xc0ae4b)
         arr.recycle()
         return color
-    }
-
-    /**
-     * Closes the search results page
-     * @param activity The current activity
-     */
-    fun closeSearchPage(activity: AppCompatActivity) {
-        val fm = activity.supportFragmentManager
-        fm.beginTransaction().remove(fm.findFragmentByTag(SearchPreferenceFragment.TAG)!!).commit()
     }
 }

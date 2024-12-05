@@ -73,6 +73,6 @@ class SearchPreference : Preference, View.OnClickListener {
     }
 
     override fun onClick(view: View) {
-        searchConfiguration.showSearchFragment()
+        searchConfiguration.onSearch()
     }
 }

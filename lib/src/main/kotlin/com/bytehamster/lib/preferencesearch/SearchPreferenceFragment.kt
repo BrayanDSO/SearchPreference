@@ -35,6 +35,7 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
     private var adapter: SearchPreferenceAdapter? = null
     private var historyClickListener: ((String) -> Unit)? = null
     private var searchTermPreset: CharSequence? = null
+    private var onSearchResultClickedListener: (SearchPreferenceResultListener)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -221,6 +222,10 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
         }
     }
 
+    fun setOnSearchResultClickedListener(onSearchResultClickedListener: SearchPreferenceResultListener) {
+        this.onSearchResultClickedListener = onSearchResultClickedListener
+    }
+
     private fun updateSearchResults(keyword: String) {
         if (TextUtils.isEmpty(keyword)) {
             showHistory()
@@ -260,16 +265,10 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
             historyClickListener?.invoke(text.toString())
         } else {
             hideKeyboard()
-
-            try {
-                val callback = activity as SearchPreferenceResultListener?
-                val r = results!![position]
-                addHistoryEntry(r.title!!)
-                val result = SearchPreferenceResult(r.key!!, r.resId)
-                callback!!.onSearchResultClicked(result)
-            } catch (e: ClassCastException) {
-                throw ClassCastException(activity.toString() + " must implement SearchPreferenceResultListener")
-            }
+            val r = results!![position]
+            addHistoryEntry(r.title!!)
+            val result = SearchPreferenceResult(r.key!!, r.resId)
+            onSearchResultClickedListener?.onSearchResultClicked(result)
         }
     }
 

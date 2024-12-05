@@ -2,6 +2,7 @@ package com.bytehamster.preferencesearch
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.bytehamster.lib.preferencesearch.SearchPreference
@@ -23,7 +24,7 @@ class SimpleExample : AppCompatActivity(), SearchPreferenceResultListener {
     }
 
     override fun onSearchResultClicked(result: SearchPreferenceResult) {
-        result.closeSearchPage(this)
+        supportFragmentManager.popBackStack()
         result.highlight(prefsFragment!!)
     }
 
@@ -34,7 +35,16 @@ class SimpleExample : AppCompatActivity(), SearchPreferenceResultListener {
             val searchPreference =
                 findPreference<Preference>("searchPreference") as SearchPreference?
             val config = searchPreference!!.searchConfiguration
-            config.setActivity((activity as AppCompatActivity?)!!)
+            config.setOnSearchListener { searchPreferenceFragment ->
+                parentFragmentManager.commit {
+                    replace(android.R.id.content, searchPreferenceFragment, "Boo")
+                    addToBackStack(null)
+                }
+            }
+            config.setOnSearchResultClickedListener { result ->
+                parentFragmentManager.popBackStack()
+                result.highlight(this)
+            }
             config.index(R.xml.preferences)
         }
     }

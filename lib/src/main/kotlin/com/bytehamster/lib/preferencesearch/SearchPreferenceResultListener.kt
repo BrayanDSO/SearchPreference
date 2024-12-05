@@ -1,5 +1,5 @@
 package com.bytehamster.lib.preferencesearch
 
-interface SearchPreferenceResultListener {
+fun interface SearchPreferenceResultListener {
     fun onSearchResultClicked(result: SearchPreferenceResult)
 }

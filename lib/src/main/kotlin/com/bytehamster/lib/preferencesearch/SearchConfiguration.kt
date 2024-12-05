@@ -1,15 +1,11 @@
 package com.bytehamster.lib.preferencesearch
 
-import android.os.Binder
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 import android.os.Parcelable.Creator
 import androidx.annotation.ColorInt
-import androidx.annotation.IdRes
-import androidx.annotation.StringRes
 import androidx.annotation.XmlRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.BundleCompat
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -27,39 +23,32 @@ class SearchConfiguration {
     private var breadcrumbsEnabled = false
     private var fuzzySearchEnabled = true
     private var searchBarEnabled = true
-    private var activity: AppCompatActivity? = null
-    private var containerResId = android.R.id.content
     var revealAnimationSetting: RevealAnimationSetting? = null
         private set
     private var textClearHistory: String? = null
     private var textNoResults: String? = null
     private var textHint: String? = null
 
-    internal constructor()
+    private var onSearchListener: ((SearchPreferenceFragment) -> Unit)? = null
 
-    /**
-     * Creates a new search configuration
-     * @param activity The Activity that receives callbacks. Must implement SearchPreferenceResultListener.
-     */
-    constructor(activity: AppCompatActivity) {
-        setActivity(activity)
+    fun setOnSearchListener(onSearchListener: (SearchPreferenceFragment) -> Unit): SearchConfiguration {
+        this.onSearchListener = onSearchListener
+        return this
     }
 
-    /**
-     * Shows the fragment
-     * @return A reference to the fragment
-     */
-    fun showSearchFragment(): SearchPreferenceFragment {
-        checkNotNull(activity) { "setActivity() not called" }
+    private var onSearchResultClickedListener: (SearchPreferenceResultListener)? = null
 
-        val arguments = this.toBundle()
-        val fragment = SearchPreferenceFragment()
-        fragment.arguments = arguments
-        activity!!.supportFragmentManager.beginTransaction()
-            .add(containerResId, fragment, SearchPreferenceFragment.TAG)
-            .addToBackStack(SearchPreferenceFragment.TAG)
-            .commit()
-        return fragment
+    fun setOnSearchResultClickedListener(onSearchResultClickedListener: SearchPreferenceResultListener): SearchConfiguration {
+        this.onSearchResultClickedListener = onSearchResultClickedListener
+        return this
+    }
+
+    fun onSearch() {
+        val fragment = SearchPreferenceFragment().apply {
+            arguments = toBundle()
+            onSearchResultClickedListener?.let { this.setOnSearchResultClickedListener(it) }
+        }
+        onSearchListener?.invoke(fragment)
     }
 
     private fun toBundle(): Bundle {
@@ -79,15 +68,6 @@ class SearchConfiguration {
         arguments.putString(ARGUMENT_TEXT_NO_RESULTS, textNoResults)
         arguments.putString(ARGUMENT_HISTORY_ID, historyId)
         return arguments
-    }
-
-    /**
-     * Sets the current activity that also receives callbacks
-     * @param activity The Activity that receives callbacks. Must implement SearchPreferenceResultListener.
-     */
-    fun setActivity(activity: AppCompatActivity) {
-        this.activity = activity
-        require(activity is SearchPreferenceResultListener) { "Activity must implement SearchPreferenceResultListener" }
     }
 
     /**
@@ -135,14 +115,6 @@ class SearchConfiguration {
     }
 
     /**
-     * Sets the container to use when loading the fragment
-     * @param containerResId Resource id of the container
-     */
-    fun setFragmentContainerViewId(@IdRes containerResId: Int) {
-        this.containerResId = containerResId
-    }
-
-    /**
      * Display a reveal animation
      * @param centerX Origin of the reveal animation
      * @param centerY Origin of the reveal animation
@@ -176,6 +148,7 @@ class SearchConfiguration {
      * @return the indexed PreferenceItem to configure it with chaining
      * @see PreferenceItem for the available methods for configuring it
      */
+    @Suppress("unused")
     fun indexItem(): PreferenceItem {
         val preferenceItem = PreferenceItem()
         preferencesToIndex!!.add(preferenceItem)
@@ -188,6 +161,7 @@ class SearchConfiguration {
      * @return the indexed PreferenceItem to configure it with chaining
      * @see PreferenceItem for the available methods for configuring it
      */
+    @Suppress("unused")
     fun indexItem(preference: Preference): PreferenceItem {
         val preferenceItem = PreferenceItem()
 
@@ -201,9 +175,8 @@ class SearchConfiguration {
             preferenceItem.title = preference.title.toString()
         }
         if (preference is ListPreference) {
-            val listPreference = preference
-            if (listPreference.entries != null) {
-                preferenceItem.entries = listPreference.entries.contentToString()
+            if (preference.entries != null) {
+                preferenceItem.entries = preference.entries.contentToString()
             }
         }
         preferencesToIndex!!.add(preferenceItem)
@@ -280,16 +253,6 @@ class SearchConfiguration {
         constructor(@XmlRes resId: Int, searchConfiguration: SearchConfiguration) {
             this.resId = resId
             this.searchConfiguration = searchConfiguration
-        }
-
-        /**
-         * Adds a breadcrumb
-         * @param breadcrumb The breadcrumb to add
-         * @return For chaining
-         */
-        fun addBreadcrumb(@StringRes breadcrumb: Int): SearchIndexItem {
-            assertNotParcel()
-            return addBreadcrumb(searchConfiguration!!.activity!!.getString(breadcrumb))
         }
 
         /**
