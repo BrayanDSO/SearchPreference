@@ -44,10 +44,6 @@ class SimpleExample : AppCompatActivity(), SearchPreferenceResultListener {
                     addToBackStack(null)
                 }
             }
-            config.setOnSearchResultClickedListener { result ->
-                parentFragmentManager.popBackStack()
-                result.highlight(this)
-            }
             config.index(R.xml.preferences)
         }
     }

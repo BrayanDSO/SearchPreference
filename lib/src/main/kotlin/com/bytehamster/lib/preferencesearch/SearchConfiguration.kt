@@ -36,18 +36,10 @@ class SearchConfiguration {
         return this
     }
 
-    private var onSearchResultClickedListener: (SearchPreferenceResultListener)? = null
-
-    fun setOnSearchResultClickedListener(onSearchResultClickedListener: SearchPreferenceResultListener): SearchConfiguration {
-        this.onSearchResultClickedListener = onSearchResultClickedListener
-        return this
-    }
-
     fun onSearch() {
         val fragment =
             SearchPreferenceFragment().apply {
                 arguments = toBundle()
-                onSearchResultClickedListener?.let { this.setOnSearchResultClickedListener(it) }
             }
         onSearchListener?.invoke(fragment)
     }

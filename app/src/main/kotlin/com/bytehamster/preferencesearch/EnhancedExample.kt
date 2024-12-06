@@ -27,10 +27,9 @@ class EnhancedExample : AppCompatActivity(), SearchPreferenceResultListener {
 
     override fun onSearchResultClicked(result: SearchPreferenceResult) {
         prefsFragment = PrefsFragment()
-        supportFragmentManager.beginTransaction()
-            .replace(android.R.id.content, prefsFragment!!).addToBackStack("PrefsFragment")
-            .commit() // Allow to navigate back to search
-
+        supportFragmentManager.commit {
+            replace(android.R.id.content, prefsFragment!!).addToBackStack("PrefsFragment")
+        }
         Handler().post { prefsFragment!!.onSearchResultClicked(result) }
     }
 
@@ -51,7 +50,6 @@ class EnhancedExample : AppCompatActivity(), SearchPreferenceResultListener {
                     addToBackStack(null)
                 }
             }
-            config.setOnSearchResultClickedListener(this)
             config.index(R.xml.preferences).addBreadcrumb("Main file")
             config.index(R.xml.preferences2).addBreadcrumb("Second file")
             config.setBreadcrumbsEnabled(true)

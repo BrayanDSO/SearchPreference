@@ -35,7 +35,6 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
     private var adapter: SearchPreferenceAdapter? = null
     private var historyClickListener: ((String) -> Unit)? = null
     private var searchTermPreset: CharSequence? = null
-    private var onSearchResultClickedListener: (SearchPreferenceResultListener)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -226,10 +225,6 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
         }
     }
 
-    fun setOnSearchResultClickedListener(onSearchResultClickedListener: SearchPreferenceResultListener) {
-        this.onSearchResultClickedListener = onSearchResultClickedListener
-    }
-
     private fun updateSearchResults(keyword: String) {
         if (TextUtils.isEmpty(keyword)) {
             showHistory()
@@ -270,11 +265,15 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
             viewHolder!!.searchView.setSelection(text.length)
             historyClickListener?.invoke(text.toString())
         } else {
+            if (activity !is SearchPreferenceResultListener && parentFragment !is SearchPreferenceResultListener) {
+                throw IllegalStateException("Parent fragment or Activity must implement SearchPreferenceResultListener")
+            }
             hideKeyboard()
             val r = results!![position]
             addHistoryEntry(r.title!!)
             val result = SearchPreferenceResult(r.key!!, r.resId)
-            onSearchResultClickedListener?.onSearchResultClicked(result)
+            (activity as? SearchPreferenceResultListener)?.onSearchResultClicked(result)
+            (parentFragment as? SearchPreferenceResultListener)?.onSearchResultClicked(result)
         }
     }
 
