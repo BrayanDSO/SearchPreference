@@ -84,6 +84,7 @@ class SearchConfiguration {
      * history. The default id is null (no id).
      * @param historyId the history id
      */
+    @Suppress("unused")
     fun setHistoryId(historyId: String?) {
         this.historyId = historyId
     }
@@ -111,6 +112,7 @@ class SearchConfiguration {
      * Default is true
      * @param searchBarEnabled True if search bar should be shown
      */
+    @Suppress("unused")
     fun setSearchBarEnabled(searchBarEnabled: Boolean) {
         this.searchBarEnabled = searchBarEnabled
     }
@@ -123,6 +125,7 @@ class SearchConfiguration {
      * @param height Size of the main container
      * @param colorAccent Accent color to use
      */
+    @Suppress("unused")
     fun useAnimation(
         centerX: Int,
         centerY: Int,
@@ -189,6 +192,7 @@ class SearchConfiguration {
     /**
      * @param key of the preference to be ignored
      */
+    @Suppress("unused")
     fun ignorePreference(key: String) {
         bannedKeys.add(key)
     }
@@ -298,6 +302,7 @@ class SearchConfiguration {
         }
 
         companion object {
+            @Suppress("unused")
             @JvmField
             val CREATOR: Creator<SearchIndexItem> =
                 object : Creator<SearchIndexItem> {

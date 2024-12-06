@@ -5,8 +5,6 @@ import android.text.TextUtils
 import com.bytehamster.lib.preferencesearch.Breadcrumb.concat
 import com.bytehamster.lib.preferencesearch.SearchConfiguration.SearchIndexItem
 import org.xmlpull.v1.XmlPullParser
-import java.util.Arrays
-import java.util.Collections
 
 internal class PreferenceParser(private val context: Context) {
     private val allEntries = ArrayList<PreferenceItem>()
@@ -115,6 +113,7 @@ internal class PreferenceParser(private val context: Context) {
         }
     }
 
+    @Suppress("SameParameterValue")
     private fun hasAttribute(
         xpp: XmlPullParser,
         namespace: String?,
@@ -181,9 +180,7 @@ internal class PreferenceParser(private val context: Context) {
             }
         }
 
-        Collections.sort(
-            results,
-        ) { i1, i2 ->
+        results.sortWith { i1, i2 ->
             floatCompare(
                 i2.getScore(keyword!!),
                 i1.getScore(
@@ -205,7 +202,7 @@ internal class PreferenceParser(private val context: Context) {
         private const val NS_SEARCH =
             "http://schemas.android.com/apk/com.bytehamster.lib.preferencesearch"
         private val BLACKLIST: List<String> =
-            Arrays.asList(
+            listOf(
                 SearchPreference::class.java.name,
                 "PreferenceCategory",
             )

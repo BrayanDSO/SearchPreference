@@ -1,5 +1,6 @@
 package com.bytehamster.lib.preferencesearch
 
+import android.annotation.SuppressLint
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -71,13 +72,14 @@ internal class SearchPreferenceAdapter :
             }
         }
 
-        h.root.setOnClickListener { v: View? ->
+        h.root.setOnClickListener { _: View? ->
             if (onItemClickListener != null) {
                 onItemClickListener!!.onItemClicked(listItem, h.absoluteAdapterPosition)
             }
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setContent(items: List<ListItem>) {
         dataset = ArrayList(items)
         this.notifyDataSetChanged()

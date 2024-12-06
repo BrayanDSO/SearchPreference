@@ -49,6 +49,7 @@ class RevealAnimationSetting : Parcelable {
 
     companion object {
         @JvmField
+        @Suppress("unused")
         val CREATOR: Creator<RevealAnimationSetting> =
             object : Creator<RevealAnimationSetting> {
                 override fun createFromParcel(`in`: Parcel): RevealAnimationSetting {

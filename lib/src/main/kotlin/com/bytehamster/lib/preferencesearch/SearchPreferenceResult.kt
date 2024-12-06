@@ -2,7 +2,9 @@ package com.bytehamster.lib.preferencesearch
 
 import android.content.Context
 import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
 import androidx.appcompat.content.res.AppCompatResources
@@ -28,7 +30,7 @@ class SearchPreferenceResult internal constructor(
      * @param prefsFragment Fragment that contains the preference
      */
     fun highlight(prefsFragment: PreferenceFragmentCompat) {
-        Handler().post { doHighlight(prefsFragment) }
+        Handler(Looper.getMainLooper()).post { doHighlight(prefsFragment) }
     }
 
     private fun doHighlight(prefsFragment: PreferenceFragmentCompat) {
@@ -82,15 +84,16 @@ class SearchPreferenceResult internal constructor(
                 R.drawable.searchpreference_ic_arrow_right,
             )
         val color = getColorFromAttr(prefsFragment.requireContext(), android.R.attr.textColorPrimary)
-        arrow!!.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+        arrow?.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
         prefResult.icon = arrow
         prefsFragment.scrollToPreference(prefResult)
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             prefResult.icon = oldIcon
             prefResult.isIconSpaceReserved = oldSpaceReserved
         }, 1000)
     }
 
+    @Suppress("SameParameterValue")
     private fun getColorFromAttr(
         context: Context,
         attr: Int,

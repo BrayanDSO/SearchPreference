@@ -60,7 +60,7 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
         val rootView = inflater.inflate(R.layout.searchpreference_fragment, container, false)
         viewHolder = SearchViewHolder(rootView)
 
-        viewHolder!!.clearButton.setOnClickListener { view: View? ->
+        viewHolder!!.clearButton.setOnClickListener { _: View? ->
             viewHolder!!.searchView.setText(
                 "",
             )
@@ -74,7 +74,7 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
         if (searchConfiguration.getTextNoResults() != null) {
             viewHolder!!.noResults.text = searchConfiguration.getTextNoResults()
         }
-        viewHolder!!.moreButton.setOnClickListener { v: View? ->
+        viewHolder!!.moreButton.setOnClickListener { _: View? ->
             val popup =
                 PopupMenu(
                     requireContext(),
@@ -121,7 +121,7 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
                 anim,
             )
         }
-        rootView.setOnTouchListener { v: View?, event: MotionEvent? -> true }
+        rootView.setOnTouchListener { _: View?, _: MotionEvent? -> true }
         return rootView
     }
 
@@ -219,6 +219,7 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
         }
     }
 
+    @Suppress("unused")
     fun setSearchTerm(term: CharSequence?) {
         if (viewHolder != null) {
             viewHolder!!.searchView.setText(term)
@@ -310,6 +311,7 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
             }
         }
 
+    @Suppress("unused")
     fun setHistoryClickListener(historyClickListener: (String) -> Unit) {
         this.historyClickListener = historyClickListener
     }
@@ -327,9 +329,6 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
     }
 
     companion object {
-        /** Default tag used on the library's Fragment transactions with [SearchPreferenceFragment]  */
-        const val TAG: String = "SearchPreferenceFragment"
-
         private const val SHARED_PREFS_FILE = "preferenceSearch"
         private const val MAX_HISTORY = 5
     }

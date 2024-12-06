@@ -12,6 +12,12 @@ internal class HistoryItem(
         return false
     }
 
+    override fun hashCode(): Int {
+        var result = term.hashCode()
+        result = 31 * result + type
+        return result
+    }
+
     companion object {
         const val TYPE: Int = 1
     }

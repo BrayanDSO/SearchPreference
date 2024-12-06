@@ -101,31 +101,37 @@ class PreferenceItem : ListItem, Parcelable {
             return infoBuilder.toString()
         }
 
+    @Suppress("unused")
     fun withKey(key: String?): PreferenceItem {
         this.key = key
         return this
     }
 
+    @Suppress("unused")
     fun withSummary(summary: String?): PreferenceItem {
         this.summary = summary
         return this
     }
 
+    @Suppress("unused")
     fun withTitle(title: String?): PreferenceItem {
         this.title = title
         return this
     }
 
+    @Suppress("unused")
     fun withEntries(entries: String?): PreferenceItem {
         this.entries = entries
         return this
     }
 
+    @Suppress("unused")
     fun withKeywords(keywords: String?): PreferenceItem {
         this.keywords = keywords
         return this
     }
 
+    @Suppress("unused")
     fun withResId(
         @XmlRes resId: Int,
     ): PreferenceItem {
@@ -137,6 +143,7 @@ class PreferenceItem : ListItem, Parcelable {
      * @param breadcrumb The breadcrumb to add
      * @return For chaining
      */
+    @Suppress("unused")
     fun addBreadcrumb(breadcrumb: String): PreferenceItem {
         this.breadcrumbs = concat(this.breadcrumbs, breadcrumb)
         return this
@@ -164,9 +171,10 @@ class PreferenceItem : ListItem, Parcelable {
 
     companion object {
         const val TYPE: Int = 2
-        private val fuzzyScore = FuzzyScore(Locale.getDefault())
+        private val fuzzyScore get() = FuzzyScore(Locale.getDefault())
 
         @JvmField
+        @Suppress("unused")
         val CREATOR: Creator<PreferenceItem> =
             object : Creator<PreferenceItem> {
                 override fun createFromParcel(`in`: Parcel): PreferenceItem {
