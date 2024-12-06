@@ -58,3 +58,16 @@ tasks.register<Copy>("installGitHook") {
 tasks.named("preBuild") {
     dependsOn("installGitHook")
 }
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                from(components["release"])
+                groupId = "com.github.BrayanDSO"
+                artifactId = "SearchPreference"
+                version = "3.0.0"
+            }
+        }
+    }
+}
