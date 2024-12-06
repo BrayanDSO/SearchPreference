@@ -66,7 +66,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.BrayanDSO"
                 artifactId = "SearchPreference"
-                version = "3.0.0"
+                version = "3.0.1"
             }
         }
     }
