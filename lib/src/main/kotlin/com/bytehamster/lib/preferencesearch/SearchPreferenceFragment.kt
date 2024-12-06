@@ -200,23 +200,21 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
     }
 
     private fun showKeyboard() {
-        viewHolder!!.searchView.post {
-            viewHolder!!.searchView.requestFocus()
-            val imm =
-                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(
-                viewHolder!!.searchView,
+        val searchView = viewHolder?.searchView ?: return
+        searchView.post {
+            searchView.requestFocus()
+            val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.showSoftInput(
+                searchView,
                 InputMethodManager.SHOW_IMPLICIT,
             )
         }
     }
 
     private fun hideKeyboard() {
-        val view = requireActivity().currentFocus
-        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        if (view != null) {
-            imm.hideSoftInputFromWindow(view.windowToken, 0)
-        }
+        val view = activity?.currentFocus ?: return
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     @Suppress("unused")
