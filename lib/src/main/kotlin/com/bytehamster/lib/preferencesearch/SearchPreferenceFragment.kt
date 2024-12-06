@@ -18,6 +18,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import androidx.cardview.widget.CardView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,11 +27,11 @@ import com.bytehamster.lib.preferencesearch.SearchPreferenceAdapter.SearchClickL
 import com.bytehamster.lib.preferencesearch.ui.AnimationUtils
 
 class SearchPreferenceFragment : Fragment(), SearchClickListener {
-    private var searcher: PreferenceParser? = null
+    private lateinit var searcher: PreferenceParser
     private var results: List<PreferenceItem>? = null
     private var history: MutableList<HistoryItem>? = null
     private var prefs: SharedPreferences? = null
-    private var viewHolder: SearchViewHolder? = null
+    private lateinit var viewHolder: SearchViewHolder
     private lateinit var searchConfiguration: SearchConfiguration
     private var adapter: SearchPreferenceAdapter? = null
     private var historyClickListener: ((String) -> Unit)? = null
@@ -42,11 +43,10 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
         searcher = PreferenceParser(requireContext())
 
         searchConfiguration = fromBundle(requireArguments())
-        val files = searchConfiguration.files
-        for (file in files!!) {
-            searcher!!.addResourceFile(file)
+        searchConfiguration.files?.forEach { file ->
+            searcher.addResourceFile(file)
         }
-        searcher!!.addPreferenceItems(searchConfiguration.preferencesToIndex!!)
+        searcher.addPreferenceItems(searchConfiguration.preferencesToIndex)
         loadHistory()
     }
 
@@ -59,25 +59,25 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
         val rootView = inflater.inflate(R.layout.searchpreference_fragment, container, false)
         viewHolder = SearchViewHolder(rootView)
 
-        viewHolder!!.clearButton.setOnClickListener { _: View? ->
-            viewHolder!!.searchView.setText(
+        viewHolder.clearButton.setOnClickListener { _: View? ->
+            viewHolder.searchView.setText(
                 "",
             )
         }
         if (searchConfiguration.isHistoryEnabled()) {
-            viewHolder!!.moreButton.visibility = View.VISIBLE
+            viewHolder.moreButton.visibility = View.VISIBLE
         }
         if (searchConfiguration.getTextHint() != null) {
-            viewHolder!!.searchView.hint = searchConfiguration.getTextHint()
+            viewHolder.searchView.hint = searchConfiguration.getTextHint()
         }
         if (searchConfiguration.getTextNoResults() != null) {
-            viewHolder!!.noResults.text = searchConfiguration.getTextNoResults()
+            viewHolder.noResults.text = searchConfiguration.getTextNoResults()
         }
-        viewHolder!!.moreButton.setOnClickListener { _: View? ->
+        viewHolder.moreButton.setOnClickListener { _: View? ->
             val popup =
                 PopupMenu(
                     requireContext(),
-                    viewHolder!!.moreButton,
+                    viewHolder.moreButton,
                 )
             popup.menuInflater.inflate(R.menu.searchpreference_more, popup.menu)
             popup.setOnMenuItemClickListener { item: MenuItem ->
@@ -93,23 +93,23 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
             popup.show()
         }
 
-        viewHolder!!.recyclerView.layoutManager =
+        viewHolder.recyclerView.layoutManager =
             LinearLayoutManager(
                 context,
             )
         adapter = SearchPreferenceAdapter()
         adapter!!.setSearchConfiguration(searchConfiguration)
         adapter!!.setOnItemClickListener(this)
-        viewHolder!!.recyclerView.adapter = adapter
+        viewHolder.recyclerView.adapter = adapter
 
-        viewHolder!!.searchView.addTextChangedListener(textWatcher)
+        viewHolder.searchView.addTextChangedListener(textWatcher)
 
         if (!searchConfiguration.isSearchBarEnabled()) {
-            viewHolder!!.cardView.visibility = View.GONE
+            viewHolder.cardView.visibility = View.GONE
         }
 
         if (searchTermPreset != null) {
-            viewHolder!!.searchView.setText(searchTermPreset)
+            viewHolder.searchView.setText(searchTermPreset)
         }
 
         val anim = searchConfiguration.revealAnimationSetting
@@ -171,7 +171,7 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
     }
 
     private fun clearHistory() {
-        viewHolder!!.searchView.setText("")
+        viewHolder.searchView.setText("")
         history!!.clear()
         saveHistory()
         updateSearchResults("")
@@ -185,13 +185,13 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
             }
             history!!.add(0, newItem)
             saveHistory()
-            updateSearchResults(viewHolder!!.searchView.text.toString())
+            updateSearchResults(viewHolder.searchView.text.toString())
         }
     }
 
     override fun onResume() {
         super.onResume()
-        updateSearchResults(viewHolder!!.searchView.text.toString())
+        updateSearchResults(viewHolder.searchView.text.toString())
 
         if (searchConfiguration.isSearchBarEnabled()) {
             showKeyboard()
@@ -218,8 +218,8 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
 
     @Suppress("unused")
     fun setSearchTerm(term: CharSequence?) {
-        if (viewHolder != null) {
-            viewHolder!!.searchView.setText(term)
+        if (this::viewHolder.isInitialized) {
+            viewHolder.searchView.setText(term)
         } else {
             searchTermPreset = term
         }
@@ -231,7 +231,7 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
             return
         }
 
-        results = searcher!!.searchFor(keyword, searchConfiguration.isFuzzySearchEnabled())
+        results = searcher.searchFor(keyword, searchConfiguration.isFuzzySearchEnabled())
         adapter!!.setContent(results!!.toList())
 
         setEmptyViewShown(results!!.isEmpty())
@@ -239,17 +239,17 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
 
     private fun setEmptyViewShown(shown: Boolean) {
         if (shown) {
-            viewHolder!!.noResults.visibility = View.VISIBLE
-            viewHolder!!.recyclerView.visibility = View.GONE
+            viewHolder.noResults.visibility = View.VISIBLE
+            viewHolder.recyclerView.visibility = View.GONE
         } else {
-            viewHolder!!.noResults.visibility = View.GONE
-            viewHolder!!.recyclerView.visibility = View.VISIBLE
+            viewHolder.noResults.visibility = View.GONE
+            viewHolder.recyclerView.visibility = View.VISIBLE
         }
     }
 
     private fun showHistory() {
-        viewHolder!!.noResults.visibility = View.GONE
-        viewHolder!!.recyclerView.visibility = View.VISIBLE
+        viewHolder.noResults.visibility = View.GONE
+        viewHolder.recyclerView.visibility = View.VISIBLE
 
         adapter!!.setContent(history!!.toList())
         setEmptyViewShown(history!!.isEmpty())
@@ -261,8 +261,8 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
     ) {
         if (item?.type == HistoryItem.TYPE) {
             val text: CharSequence = (item as HistoryItem).term
-            viewHolder!!.searchView.setText(text)
-            viewHolder!!.searchView.setSelection(text.length)
+            viewHolder.searchView.setText(text)
+            viewHolder.searchView.setSelection(text.length)
             historyClickListener?.invoke(text.toString())
         } else {
             if (activity !is SearchPreferenceResultListener && parentFragment !is SearchPreferenceResultListener) {
@@ -284,27 +284,18 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
                 i: Int,
                 i1: Int,
                 i2: Int,
-            ) {
-            }
+            ) {}
 
             override fun onTextChanged(
                 charSequence: CharSequence,
                 i: Int,
                 i1: Int,
                 i2: Int,
-            ) {
-            }
+            ) {}
 
             override fun afterTextChanged(editable: Editable) {
                 updateSearchResults(editable.toString())
-                viewHolder!!.clearButton.visibility =
-                    if (editable.toString()
-                            .isEmpty()
-                    ) {
-                        View.GONE
-                    } else {
-                        View.VISIBLE
-                    }
+                viewHolder.clearButton.isVisible = editable.toString().isNotEmpty()
             }
         }
 
@@ -314,13 +305,10 @@ class SearchPreferenceFragment : Fragment(), SearchClickListener {
     }
 
     private class SearchViewHolder(root: View) {
-        val clearButton: ImageView =
-            root.findViewById(R.id.clear)
-        val moreButton: ImageView =
-            root.findViewById(R.id.more)
+        val clearButton: ImageView = root.findViewById(R.id.clear)
+        val moreButton: ImageView = root.findViewById(R.id.more)
         val searchView: EditText = root.findViewById(R.id.search)
-        val recyclerView: RecyclerView =
-            root.findViewById(R.id.list)
+        val recyclerView: RecyclerView = root.findViewById(R.id.list)
         val noResults: TextView = root.findViewById(R.id.no_results)
         val cardView: CardView = root.findViewById(R.id.search_card)
     }

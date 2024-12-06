@@ -15,7 +15,7 @@ import com.bytehamster.lib.preferencesearch.ui.RevealAnimationSetting
 class SearchConfiguration {
     var files: ArrayList<SearchIndexItem>? = ArrayList()
         private set
-    var preferencesToIndex: ArrayList<PreferenceItem>? = ArrayList()
+    var preferencesToIndex: ArrayList<PreferenceItem> = ArrayList()
         private set
     val bannedKeys: ArrayList<String> = ArrayList()
     private var historyEnabled = true
@@ -149,7 +149,7 @@ class SearchConfiguration {
     @Suppress("unused")
     fun indexItem(): PreferenceItem {
         val preferenceItem = PreferenceItem()
-        preferencesToIndex!!.add(preferenceItem)
+        preferencesToIndex.add(preferenceItem)
         return preferenceItem
     }
 
@@ -177,7 +177,7 @@ class SearchConfiguration {
                 preferenceItem.entries = preference.entries.contentToString()
             }
         }
-        preferencesToIndex!!.add(preferenceItem)
+        preferencesToIndex.add(preferenceItem)
         return preferenceItem
     }
 
@@ -329,7 +329,7 @@ class SearchConfiguration {
             config.preferencesToIndex =
                 BundleCompat.getParcelableArrayList(
                     bundle, ARGUMENT_INDEX_INDIVIDUAL_PREFERENCES, PreferenceItem::class.java,
-                )
+                ) ?: arrayListOf()
             config.historyEnabled = bundle.getBoolean(ARGUMENT_HISTORY_ENABLED)
             config.revealAnimationSetting =
                 BundleCompat.getParcelable(
